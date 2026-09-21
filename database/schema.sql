@@ -1,7 +1,8 @@
 -- Create database
 CREATE DATABASE IF NOT EXISTS activity_manager CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE activity_manager;
--- Create table: Users
+
+-- Users
 CREATE TABLE users (
   user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL UNIQUE,
@@ -9,17 +10,20 @@ CREATE TABLE users (
   user_role ENUM('STUDENT', 'TEACHER', 'ADMIN') NOT NULL DEFAULT 'STUDENT',
   user_email VARCHAR(50) UNIQUE
 );
--- Create table: Departments
+
+-- Departments
 CREATE TABLE departments (
   department_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   department_name VARCHAR(50) NOT NULL UNIQUE
 );
--- Create table: Student_Groups
+
+-- Student Groups
 CREATE TABLE student_groups (
   group_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   group_name VARCHAR(50) NOT NULL UNIQUE
 );
--- Create table: Teachers
+
+-- Teachers
 CREATE TABLE teachers (
   teacher_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   last_name VARCHAR(50) NOT NULL,
@@ -29,7 +33,8 @@ CREATE TABLE teachers (
   FOREIGN KEY (department_id) REFERENCES Departments(department_id),
   FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
--- Create table: Students
+
+-- Students
 CREATE TABLE students (
   student_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   last_name VARCHAR(50) NOT NULL,
@@ -39,7 +44,8 @@ CREATE TABLE students (
   FOREIGN KEY (group_id) REFERENCES Student_Groups(group_id),
   FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
--- Create table: Courses
+
+-- Courses
 CREATE TABLE courses (
   course_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   course_name VARCHAR(50) NOT NULL UNIQUE,
@@ -47,7 +53,8 @@ CREATE TABLE courses (
   teacher_id BIGINT NOT NULL,
   FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id)
 );
--- Create table: Course_Sessions
+
+-- Course Sessions
 CREATE TABLE course_sessions (
   session_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   course_id BIGINT NOT NULL,
@@ -56,7 +63,8 @@ CREATE TABLE course_sessions (
   duration TIME DEFAULT '02:00:00',
   FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
--- Create table: Course_Enrollment
+
+-- Course Enrollment
 CREATE TABLE course_enrollment (
   student_id BIGINT NOT NULL,
   course_id BIGINT NOT NULL,
@@ -65,7 +73,8 @@ CREATE TABLE course_enrollment (
   FOREIGN KEY (student_id) REFERENCES Students(student_id),
   FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
--- Create table: Attendance
+
+-- Attendance
 CREATE TABLE attendance (
   session_id BIGINT NOT NULL,
   student_id BIGINT NOT NULL,
@@ -74,7 +83,8 @@ CREATE TABLE attendance (
   FOREIGN KEY (session_id) REFERENCES Course_Sessions(session_id),
   FOREIGN KEY (student_id) REFERENCES Students(student_id)
 );
--- Create table: Activities
+
+-- Activities
 CREATE TABLE activities (
   activity_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   teacher_id BIGINT NOT NULL,
@@ -93,7 +103,8 @@ CREATE TABLE activities (
   difficulty ENUM('EASY', 'MEDIUM', 'HARD') NOT NULL DEFAULT 'EASY',
   FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id)
 );
--- Create table: Activity_Subtask
+
+-- Activity Subtasks
 CREATE TABLE activity_subtasks (
   subtask_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   activity_id BIGINT NOT NULL,

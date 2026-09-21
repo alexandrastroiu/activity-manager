@@ -1,0 +1,38 @@
+package com.example.activity_manager.repository;
+
+import com.example.activity_manager.model.Activity;
+import com.example.activity_manager.model.ActivityStatus;
+import com.example.activity_manager.model.Priority;
+import com.example.activity_manager.model.Difficulty;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ActivityRepository extends JpaRepository<Activity, Long> {
+    List<Activity> findByTeacher_TeacherId(Long teacherId);
+
+    List<Activity> findByTeacher_TeacherIdAndStatus(
+            Long teacherId,
+            ActivityStatus status
+    );
+
+    List<Activity> findByTeacher_TeacherIdAndPriority(
+            Long teacherId,
+            Priority priority
+    );
+
+    List<Activity> findByTeacher_TeacherIdAndDifficulty(
+            Long teacherId,
+            Difficulty difficulty
+    );
+
+    List<Activity> findByTeacher_TeacherIdOrderByEndDateAsc(Long teacherId);
+
+    long countByTeacher_TeacherIdAndStatus(
+            Long teacherId,
+            ActivityStatus status
+    );
+
+    long countByTeacher_TeacherId(Long teacherId);
+
+}

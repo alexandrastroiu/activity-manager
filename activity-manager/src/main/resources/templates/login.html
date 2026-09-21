@@ -1,0 +1,47 @@
+<!-- Login page -->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<div class="page" style="max-width:520px;">
+    <div class="card login">
+        <div class="card-head">
+            <div class="container">
+                <div class="card-title">Teacher Dashboard - Login</div>
+                <img src="/css/icon.png" alt="App icon" id="img">
+                <div class="card-subtitle">Sign in to access your dashboard!</div>
+            </div>
+        </div>
+
+        <div th:if="${param.error}" class="flash flash-error">
+            Invalid username/password (or not a teacher).
+        </div>
+        <div th:if="${param.logout}" class="flash flash-ok">
+            You are not logged in.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="form-grid" style="grid-template-columns:1fr;">
+            <!-- CSRF -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="field">
+                <label>Username</label>
+                <input class="input" name="username" autocomplete="username" required/>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input class="input" name="password" type="password" autocomplete="current-password" required/>
+            </div>
+
+            <button class="btn primary btnlogin" type="submit">Login</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
