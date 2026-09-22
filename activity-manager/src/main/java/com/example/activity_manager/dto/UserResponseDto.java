@@ -1,6 +1,6 @@
 package com.example.activity_manager.dto;
 
-import com.example.activity_manager.model.UserRole;
+import com.example.activity_manager.enums.UserRole;
 import com.example.activity_manager.model.User;
 
 public class UserResponseDto {

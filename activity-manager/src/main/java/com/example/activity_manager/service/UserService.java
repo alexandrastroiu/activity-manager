@@ -1,7 +1,7 @@
 package com.example.activity_manager.service;
 
 import com.example.activity_manager.model.User;
-import com.example.activity_manager.model.UserRole;
+import com.example.activity_manager.enums.UserRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.activity_manager.repository.UserRepository;

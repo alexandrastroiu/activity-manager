@@ -1,13 +1,12 @@
 package com.example.activity_manager.dto;
 
 import com.example.activity_manager.model.Activity;
-import com.example.activity_manager.model.ActivityStatus;
-import com.example.activity_manager.model.Priority;
-import com.example.activity_manager.model.Difficulty;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Priority;
+import com.example.activity_manager.enums.Difficulty;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ActivityResponseDto {
 

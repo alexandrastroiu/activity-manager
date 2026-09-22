@@ -1,6 +1,6 @@
 package com.example.activity_manager.dto;
 
-import com.example.activity_manager.model.AttendanceStatus;
+import com.example.activity_manager.enums.AttendanceStatus;
 
 import jakarta.validation.constraints.NotNull;
 

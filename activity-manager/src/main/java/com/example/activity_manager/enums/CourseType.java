@@ -1,4 +1,4 @@
-package com.example.activity_manager.model;
+package com.example.activity_manager.enums;
 
 public enum CourseType {
     MANDATORY,

@@ -3,9 +3,9 @@ package com.example.activity_manager.controller;
 import com.example.activity_manager.dto.*;
 import com.example.activity_manager.model.Activity;
 import com.example.activity_manager.model.Teacher;
-import com.example.activity_manager.model.ActivityStatus;
-import com.example.activity_manager.model.Priority;
-import com.example.activity_manager.model.Difficulty;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Priority;
+import com.example.activity_manager.enums.Difficulty;
 import com.example.activity_manager.service.ActivityService;
 import com.example.activity_manager.service.TeacherService;
 

@@ -1,5 +1,8 @@
 package com.example.activity_manager.model;
 
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

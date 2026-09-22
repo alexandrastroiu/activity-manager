@@ -2,7 +2,7 @@ package com.example.activity_manager.service;
 
 import com.example.activity_manager.model.ActivitySubtask;
 import com.example.activity_manager.model.Activity;
-import com.example.activity_manager.model.ActivityStatus;
+import com.example.activity_manager.enums.ActivityStatus;
 import com.example.activity_manager.repository.ActivitySubtaskRepository;
 import com.example.activity_manager.repository.ActivityRepository;
 import org.springframework.stereotype.Service;

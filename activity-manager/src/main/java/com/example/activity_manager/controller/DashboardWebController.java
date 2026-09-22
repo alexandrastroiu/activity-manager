@@ -2,6 +2,10 @@ package com.example.activity_manager.controller;
 
 import com.example.activity_manager.dto.ActivityCreateDto;
 import com.example.activity_manager.dto.TeacherDashboardDto;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.AttendanceStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
 import com.example.activity_manager.model.*;
 import com.example.activity_manager.service.*;
 import jakarta.validation.Valid;

@@ -1,7 +1,7 @@
 package com.example.activity_manager.security;
 
 import com.example.activity_manager.model.User;
-import com.example.activity_manager.model.UserRole;
+import com.example.activity_manager.enums.UserRole;
 import com.example.activity_manager.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;

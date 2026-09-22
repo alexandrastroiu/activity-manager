@@ -1,5 +1,6 @@
 package com.example.activity_manager.model;
 
+import com.example.activity_manager.enums.AttendanceStatus;
 import jakarta.persistence.*;
 
 @Entity

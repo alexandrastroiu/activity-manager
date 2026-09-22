@@ -4,7 +4,7 @@ import com.example.activity_manager.model.Attendance;
 import com.example.activity_manager.model.Student;
 import com.example.activity_manager.model.CourseSession;
 import com.example.activity_manager.model.AttendanceId;
-import com.example.activity_manager.model.AttendanceStatus;
+import com.example.activity_manager.enums.AttendanceStatus;
 import com.example.activity_manager.repository.AttendanceRepository;
 import com.example.activity_manager.repository.StudentRepository;
 import com.example.activity_manager.repository.CourseSessionRepository;
