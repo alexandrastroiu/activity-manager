@@ -25,21 +25,5 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-
-    // Teacher login logic
-    public User authenticateTeacher(String username, String rawPassword) {
-        User user = findByUsername(username);
-
-        // User role must be teacher
-        if (user.getUserRole() != UserRole.TEACHER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only teachers can log in");
-        }
-
-        // Check password and username
-        if (!passwordEncoder.matches(rawPassword, user.getUserPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
-        }
-
-        return user;
-    }
+    
 }

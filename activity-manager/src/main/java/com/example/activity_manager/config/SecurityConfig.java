@@ -22,25 +22,18 @@ public class SecurityConfig {
 
         http
 
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
-
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()  // Public static resources
 
+                        .requestMatchers("/login").permitAll()  // Public login page
 
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/ui/**").hasRole("TEACHER")  // Access only for users with teacher role
 
-
-                        .requestMatchers("/api/**").permitAll()
-
-
-                        .requestMatchers("/ui/**").hasRole("TEACHER")
-
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()  // Authentication for other endpoints
                 )
 
-                .formLogin(form -> form
+                .formLogin(form -> form  // Session-based authentication
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/ui/dashboard", true)
@@ -50,7 +43,7 @@ public class SecurityConfig {
 
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );

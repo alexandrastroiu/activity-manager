@@ -12,17 +12,14 @@
     <div class="card login">
         <div class="card-head">
             <div class="container">
-                <div class="card-title">Teacher Dashboard - Login</div>
+                <div class="card-title">Activity Manager - Login</div>
                 <img src="/css/icon.png" alt="App icon" id="img">
                 <div class="card-subtitle">Sign in to access your dashboard!</div>
             </div>
         </div>
 
         <div th:if="${param.error}" class="flash flash-error">
-            Invalid username/password (or not a teacher).
-        </div>
-        <div th:if="${param.logout}" class="flash flash-ok">
-            You are not logged in.
+            Invalid username/password or not a teacher!
         </div>
 
         <form th:action="@{/login}" method="post" class="form-grid" style="grid-template-columns:1fr;">
