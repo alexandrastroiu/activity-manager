@@ -36,6 +36,6 @@ public class CourseService {
 
     // Get the number of sessions for a course
     public Long countSessionsForCourse(Long courseId) {
-        return sessionRepository.countByCourseCourseId(courseId);
+        return sessionRepository.countByCourse_CourseId(courseId);
     }
 }

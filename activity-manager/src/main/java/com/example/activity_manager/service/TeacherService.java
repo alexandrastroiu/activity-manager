@@ -21,13 +21,13 @@ public class TeacherService {
 
     // Get teacher by user ID
     public Teacher getByUserId(Long userId) {
-        return teacherRepository.findByUserUserId(userId)
+        return teacherRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
     }
 
     // Get teacher with department
     public Teacher getTeacherWithDepartment(Long userId) {
-        return teacherRepository.findByUserUserId(userId)
+        return teacherRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
     }
 
