@@ -1,22 +1,21 @@
 package com.example.activity_manager.service;
 
-import com.example.activity_manager.model.Student;
-import com.example.activity_manager.model.CourseEnrollment;
-import com.example.activity_manager.repository.StudentRepository;
-import com.example.activity_manager.repository.CourseEnrollmentRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.example.activity_manager.model.CourseEnrollment;
+import com.example.activity_manager.model.Student;
+import com.example.activity_manager.repository.CourseEnrollmentRepository;
+import com.example.activity_manager.repository.StudentRepository;
 
 @Service
 public class StudentService {
 
-    private final StudentRepository studentRepository;
     private final CourseEnrollmentRepository enrollmentRepository;
 
     // Constructor
     public StudentService(StudentRepository studentRepository, CourseEnrollmentRepository courseEnrollmentRepository) {
-        this.studentRepository = studentRepository;
         this.enrollmentRepository = courseEnrollmentRepository;
     }
 

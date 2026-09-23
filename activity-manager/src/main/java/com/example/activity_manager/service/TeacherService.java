@@ -1,12 +1,12 @@
 package com.example.activity_manager.service;
 
-import com.example.activity_manager.model.Teacher;
-import com.example.activity_manager.repository.TeacherRepository;
-import com.example.activity_manager.repository.CourseRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.activity_manager.model.Teacher;
+import com.example.activity_manager.repository.CourseRepository;
+import com.example.activity_manager.repository.TeacherRepository;
 
 @Service
 public class TeacherService {

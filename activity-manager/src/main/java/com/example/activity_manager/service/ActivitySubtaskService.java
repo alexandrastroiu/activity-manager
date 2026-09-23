@@ -1,15 +1,16 @@
 package com.example.activity_manager.service;
 
-import com.example.activity_manager.model.ActivitySubtask;
-import com.example.activity_manager.model.Activity;
-import com.example.activity_manager.enums.ActivityStatus;
-import com.example.activity_manager.repository.ActivitySubtaskRepository;
-import com.example.activity_manager.repository.ActivityRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.model.Activity;
+import com.example.activity_manager.model.ActivitySubtask;
+import com.example.activity_manager.repository.ActivityRepository;
+import com.example.activity_manager.repository.ActivitySubtaskRepository;
 
 @Service
 public class ActivitySubtaskService {
@@ -34,15 +35,13 @@ public class ActivitySubtaskService {
 
     // Mark subtask
     public ActivitySubtask setCompleted(Long subtaskId, boolean completed) {
-        ActivitySubtask subtask = subtaskRepository.findById(subtaskId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
+        ActivitySubtask subtask = subtaskRepository.findById(subtaskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
 
         subtask.setIsCompleted(completed);
         ActivitySubtask saved = subtaskRepository.save(subtask);
 
         // If progress is 100%, auto complete the subtask
         // If activity is completed but progress is less than 100%, edit the subtask as in progress
-
         Long activityId = saved.getActivity().getActivityId();
 
         long total = subtaskRepository.countByActivity_ActivityId(activityId);
@@ -76,8 +75,7 @@ public class ActivitySubtaskService {
 
     // Update the title of a subtask
     public ActivitySubtask updateTitle(Long subtaskId, String title) {
-        ActivitySubtask st = subtaskRepository.findById(subtaskId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
+        ActivitySubtask st = subtaskRepository.findById(subtaskId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
 
         if (title == null || title.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title must not be empty");

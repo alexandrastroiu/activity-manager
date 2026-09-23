@@ -1,14 +1,14 @@
 package com.example.activity_manager.service;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.activity_manager.model.Course;
 import com.example.activity_manager.repository.CourseRepository;
 import com.example.activity_manager.repository.CourseSessionRepository;
-import org.springframework.stereotype.Service;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 public class CourseService {
@@ -27,7 +27,6 @@ public class CourseService {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
     }
-
 
     // Get all courses taught by a teacher
     public List<Course> getCoursesByTeacher(Long teacherId) {

@@ -1,18 +1,18 @@
 package com.example.activity_manager.service;
 
-import com.example.activity_manager.model.Activity;
-import com.example.activity_manager.enums.ActivityStatus;
-import com.example.activity_manager.enums.Priority;
-import com.example.activity_manager.enums.Difficulty;
-import com.example.activity_manager.repository.ActivityRepository;
-import com.example.activity_manager.repository.ActivitySubtaskRepository;
-import com.example.activity_manager.dto.ActivityCreateDto;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.activity_manager.dto.ActivityCreateDto;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
+import com.example.activity_manager.model.Activity;
+import com.example.activity_manager.repository.ActivityRepository;
+import com.example.activity_manager.repository.ActivitySubtaskRepository;
 
 @Service
 public class ActivityService {
@@ -26,7 +26,6 @@ public class ActivityService {
     }
 
     // CRUD operations
-
     // Create activity
     public Activity create(Activity activity) {
         return activityRepository.save(activity);
@@ -35,7 +34,7 @@ public class ActivityService {
     // Delete activity
     public void delete(Long id) {
         if (!activityRepository.existsById(id)) {
-            throw new RuntimeException("Activity not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activity not found");
         }
         activityRepository.deleteById(id);
     }
@@ -70,8 +69,7 @@ public class ActivityService {
 
     // Find an activity by activity ID
     public Activity getById(Long activityId) {
-        return activityRepository.findById(activityId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Activity not found"));
+        return activityRepository.findById(activityId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Activity not found"));
     }
 
     // Find all
@@ -90,7 +88,6 @@ public class ActivityService {
     }
 
     // Filtering methods for activities
-
     // Filter activities by status
     public List<Activity> getActivitiesByStatus(Long teacherId, ActivityStatus status) {
         return activityRepository.findByTeacher_TeacherIdAndStatus(teacherId, status);
@@ -101,8 +98,7 @@ public class ActivityService {
             Long teacherId,
             Priority priority
     ) {
-        return activityRepository
-                .findByTeacher_TeacherIdAndPriority(teacherId, priority);
+        return activityRepository.findByTeacher_TeacherIdAndPriority(teacherId, priority);
     }
 
     // Filter activities by difficulty level
@@ -110,10 +106,8 @@ public class ActivityService {
             Long teacherId,
             Difficulty difficulty
     ) {
-        return activityRepository
-                .findByTeacher_TeacherIdAndDifficulty(teacherId, difficulty);
+        return activityRepository.findByTeacher_TeacherIdAndDifficulty(teacherId, difficulty);
     }
-
 
     // Calculate progress for an activity
     public int calculateProgress(Long activityId) {
@@ -123,7 +117,6 @@ public class ActivityService {
 
         return total == 0 ? 0 : (int) ((completed * 100) / total);
     }
-
 
     // Count completed activities
     public long countCompletedActivities(Long teacherId) {
@@ -137,12 +130,13 @@ public class ActivityService {
         return activityRepository.countByTeacher_TeacherId(teacherId);
     }
 
-
     // Calculate average progress for all activities
     public double getAverageProgress(Long teacherId) {
         List<Activity> activities = getActivitiesByTeacher(teacherId);
 
-        if (activities.isEmpty()) return 0;
+        if (activities.isEmpty()) {
+            return 0;
+        }
 
         return activities.stream()
                 .mapToInt(a -> calculateProgress(a.getActivityId()))

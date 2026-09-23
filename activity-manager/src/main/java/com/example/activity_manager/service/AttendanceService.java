@@ -1,21 +1,23 @@
 package com.example.activity_manager.service;
 
-import com.example.activity_manager.model.Attendance;
-import com.example.activity_manager.model.Student;
-import com.example.activity_manager.model.CourseSession;
-import com.example.activity_manager.model.AttendanceId;
-import com.example.activity_manager.enums.AttendanceStatus;
-import com.example.activity_manager.repository.AttendanceRepository;
-import com.example.activity_manager.repository.StudentRepository;
-import com.example.activity_manager.repository.CourseSessionRepository;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import com.example.activity_manager.enums.AttendanceStatus;
+import com.example.activity_manager.model.Attendance;
+import com.example.activity_manager.model.AttendanceId;
+import com.example.activity_manager.model.CourseSession;
+import com.example.activity_manager.model.Student;
+import com.example.activity_manager.repository.AttendanceRepository;
+import com.example.activity_manager.repository.CourseSessionRepository;
+import com.example.activity_manager.repository.StudentRepository;
 
 @Service
 public class AttendanceService {
+
     private final AttendanceRepository attendanceRepository;
     private final CourseSessionRepository sessionRepository;
     private final StudentRepository studentRepository;
@@ -58,6 +60,9 @@ public class AttendanceService {
 
     // Delete a specific attendance entry
     public void deleteAttendance(Long sessionId, Long studentId) {
+        if (!attendanceExists(sessionId, studentId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Attendance entry not found");
+        }
         attendanceRepository.deleteById(new AttendanceId(sessionId, studentId));
     }
 
