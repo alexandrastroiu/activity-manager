@@ -1,13 +1,25 @@
 package com.example.activity_manager.model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.example.activity_manager.enums.ActivityStatus;
 import com.example.activity_manager.enums.Difficulty;
 import com.example.activity_manager.enums.Priority;
-import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.ArrayList;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "activities")
@@ -42,13 +54,13 @@ public class Activity {
     @Column(name = "priority")
     private Priority priority;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty")
     private Difficulty difficulty;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivitySubtask> subtasks = new ArrayList<>();
+
     ;
 
 

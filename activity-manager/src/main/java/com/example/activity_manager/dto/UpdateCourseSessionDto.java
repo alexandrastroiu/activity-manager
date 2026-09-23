@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import jakarta.validation.constraints.NotNull;
 
 public class UpdateCourseSessionDto {
+
     // validation rules
     @NotNull(message = "Session date must not be empty")
     private LocalDate sessionDate;

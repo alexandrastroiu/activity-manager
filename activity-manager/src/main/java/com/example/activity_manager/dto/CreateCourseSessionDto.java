@@ -1,11 +1,11 @@
 package com.example.activity_manager.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.FutureOrPresent;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class CreateCourseSessionDto {
 

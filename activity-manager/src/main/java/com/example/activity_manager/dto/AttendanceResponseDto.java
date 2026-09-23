@@ -1,7 +1,7 @@
 package com.example.activity_manager.dto;
 
-import com.example.activity_manager.model.Attendance;
 import com.example.activity_manager.enums.AttendanceStatus;
+import com.example.activity_manager.model.Attendance;
 
 public class AttendanceResponseDto {
 

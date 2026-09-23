@@ -1,9 +1,9 @@
 package com.example.activity_manager.dto;
 
-import com.example.activity_manager.model.CourseSession;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import com.example.activity_manager.model.CourseSession;
 
 public class CourseSessionResponseDto {
 

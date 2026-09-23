@@ -1,14 +1,14 @@
 package com.example.activity_manager.dto;
 
-import com.example.activity_manager.enums.ActivityStatus;
-import com.example.activity_manager.enums.Priority;
-import com.example.activity_manager.enums.Difficulty;
-
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
+
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ActivityCreateDto {

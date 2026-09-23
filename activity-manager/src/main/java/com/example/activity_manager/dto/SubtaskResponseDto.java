@@ -27,7 +27,6 @@ public class SubtaskResponseDto {
     }
 
     // Getters
-
     public Long getSubtaskId() {
         return subtaskId;
     }

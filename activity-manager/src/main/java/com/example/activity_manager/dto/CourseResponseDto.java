@@ -3,6 +3,7 @@ package com.example.activity_manager.dto;
 import com.example.activity_manager.model.Course;
 
 public class CourseResponseDto {
+
     private Long courseId;
     private String courseName;
 

@@ -1,6 +1,7 @@
 package com.example.activity_manager.dto;
 
 import com.example.activity_manager.enums.AttendanceStatus;
+
 import jakarta.validation.constraints.NotNull;
 
 public class AttendanceCreateDto {

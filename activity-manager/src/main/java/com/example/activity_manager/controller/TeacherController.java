@@ -1,14 +1,18 @@
 package com.example.activity_manager.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.activity_manager.dto.CourseResponseDto;
 import com.example.activity_manager.dto.TeacherDashboardDto;
 import com.example.activity_manager.service.ActivityService;
 import com.example.activity_manager.service.CourseService;
 import com.example.activity_manager.service.StudentService;
 import com.example.activity_manager.service.TeacherService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/teachers")
@@ -20,9 +24,9 @@ public class TeacherController {
     private final StudentService studentService;
 
     public TeacherController(TeacherService teacherService,
-                             ActivityService activityService,
-                             CourseService courseService,
-                             StudentService studentService) {
+            ActivityService activityService,
+            CourseService courseService,
+            StudentService studentService) {
         this.teacherService = teacherService;
         this.activityService = activityService;
         this.courseService = courseService;

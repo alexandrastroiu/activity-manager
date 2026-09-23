@@ -5,7 +5,7 @@ import com.example.activity_manager.enums.AttendanceStatus;
 import jakarta.validation.constraints.NotNull;
 
 public class AttendanceUpdateDto {
-    
+
     // Validation rules
     @NotNull(message = "Attendance status must not be empty")
     private AttendanceStatus status;

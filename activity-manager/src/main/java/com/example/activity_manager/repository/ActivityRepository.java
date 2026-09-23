@@ -1,14 +1,16 @@
 package com.example.activity_manager.repository;
 
-import com.example.activity_manager.model.Activity;
-import com.example.activity_manager.enums.ActivityStatus;
-import com.example.activity_manager.enums.Priority;
-import com.example.activity_manager.enums.Difficulty;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
+import com.example.activity_manager.model.Activity;
+
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
+
     List<Activity> findByTeacher_TeacherId(Long teacherId);
 
     List<Activity> findByTeacher_TeacherIdAndStatus(

@@ -1,27 +1,50 @@
 package com.example.activity_manager.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.activity_manager.dto.ActivityCreateDto;
 import com.example.activity_manager.dto.TeacherDashboardDto;
 import com.example.activity_manager.enums.ActivityStatus;
 import com.example.activity_manager.enums.AttendanceStatus;
 import com.example.activity_manager.enums.Difficulty;
 import com.example.activity_manager.enums.Priority;
-import com.example.activity_manager.model.*;
-import com.example.activity_manager.service.*;
-import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.example.activity_manager.model.Activity;
+import com.example.activity_manager.model.ActivitySubtask;
+import com.example.activity_manager.model.Attendance;
+import com.example.activity_manager.model.Course;
+import com.example.activity_manager.model.CourseSession;
+import com.example.activity_manager.model.Student;
+import com.example.activity_manager.model.Teacher;
+import com.example.activity_manager.service.ActivityService;
+import com.example.activity_manager.service.ActivitySubtaskService;
+import com.example.activity_manager.service.AttendanceService;
+import com.example.activity_manager.service.CourseService;
+import com.example.activity_manager.service.CourseSessionService;
+import com.example.activity_manager.service.StudentService;
+import com.example.activity_manager.service.TeacherService;
+import com.example.activity_manager.service.UserService;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 
 // Controller for the dashboard web interface. Handles requests related to courses, sessions, activities, and attendance management.
 @Controller
@@ -58,9 +81,11 @@ public class DashboardWebController {
     }
 
     public record CourseVM(Long id, String name, long sessionsCount) {
+
     }
 
     public record CourseOption(Long id, String name) {
+
     }
 
     public record SessionVM(
@@ -69,10 +94,12 @@ public class DashboardWebController {
             LocalTime time,
             LocalTime duration,
             int attendanceCount
-    ) {
+            ) {
+
     }
 
     public record SubtaskVM(Long id, String title, boolean completed) {
+
     }
 
     public record ActivityVM(
@@ -86,7 +113,8 @@ public class DashboardWebController {
             int progress,
             boolean overdue,
             List<SubtaskVM> subtasks
-    ) {
+            ) {
+
     }
 
     public record AttendanceRow(
@@ -95,18 +123,21 @@ public class DashboardWebController {
             String studentName,
             String groupName,
             AttendanceStatus status
-    ) {
+            ) {
+
     }
 
-
     public static class SessionForm {
+
         public LocalDate sessionDate;
         public LocalTime sessionTime;
         public LocalTime duration;
     }
 
     private Long resolveUserId(Long userId, java.security.Principal principal) {
-        if (userId != null) return userId;
+        if (userId != null) {
+            return userId;
+        }
 
         if (principal == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
@@ -114,7 +145,6 @@ public class DashboardWebController {
 
         return userService.findByUsername(principal.getName()).getUserId();
     }
-
 
     private void addEnums(Model model) {
         model.addAttribute("statuses", ActivityStatus.values());
@@ -124,20 +154,35 @@ public class DashboardWebController {
     }
 
     private String redirectDashboard(Long userId, Long courseId, Long sessionId,
-                                     ActivityStatus status, Priority priority, Difficulty difficulty, String sort,
-                                     Long editActivityId, Long editSessionId) {
+            ActivityStatus status, Priority priority, Difficulty difficulty, String sort,
+            Long editActivityId, Long editSessionId) {
         StringBuilder sb = new StringBuilder("redirect:/ui/dashboard?userId=").append(userId);
-        if (courseId != null) sb.append("&courseId=").append(courseId);
-        if (sessionId != null) sb.append("&sessionId=").append(sessionId);
-        if (status != null) sb.append("&status=").append(status);
-        if (priority != null) sb.append("&priority=").append(priority);
-        if (difficulty != null) sb.append("&difficulty=").append(difficulty);
-        if (sort != null && !sort.isBlank()) sb.append("&sort=").append(sort);
-        if (editActivityId != null) sb.append("&editActivityId=").append(editActivityId);
-        if (editSessionId != null) sb.append("&editSessionId=").append(editSessionId);
+        if (courseId != null) {
+            sb.append("&courseId=").append(courseId);
+        }
+        if (sessionId != null) {
+            sb.append("&sessionId=").append(sessionId);
+        }
+        if (status != null) {
+            sb.append("&status=").append(status);
+        }
+        if (priority != null) {
+            sb.append("&priority=").append(priority);
+        }
+        if (difficulty != null) {
+            sb.append("&difficulty=").append(difficulty);
+        }
+        if (sort != null && !sort.isBlank()) {
+            sb.append("&sort=").append(sort);
+        }
+        if (editActivityId != null) {
+            sb.append("&editActivityId=").append(editActivityId);
+        }
+        if (editSessionId != null) {
+            sb.append("&editSessionId=").append(editSessionId);
+        }
         return sb.toString();
     }
-
 
     @GetMapping("/dashboard")
     public String dashboard(
@@ -145,17 +190,12 @@ public class DashboardWebController {
             java.security.Principal principal,
             @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) Long sessionId,
-
-
             @RequestParam(required = false) ActivityStatus status,
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) Difficulty difficulty,
             @RequestParam(required = false) String sort,
-
-
             @RequestParam(required = false) Long editActivityId,
             @RequestParam(required = false) Long editSessionId,
-
             Model model
     ) {
         Long resolvedUserId = resolveUserId(userId, principal);
@@ -165,21 +205,19 @@ public class DashboardWebController {
         model.addAttribute("userId", resolvedUserId);
         model.addAttribute("teacherName", teacher.getFirstName() + " " + teacher.getLastName());
 
-
         long total = activityService.countTotalActivities(teacherId);
         long completed = activityService.countCompletedActivities(teacherId);
         double avgProgress = activityService.getAverageProgress(teacherId);
         model.addAttribute("dashboard", new TeacherDashboardDto(total, completed, avgProgress));
 
-
         List<Course> courses = courseService.getCoursesByTeacher(teacherId);
 
         List<CourseVM> courseTable = courses.stream()
                 .map(c -> new CourseVM(
-                        c.getCourseId(),
-                        c.getCourseName(),
-                        courseService.countSessionsForCourse(c.getCourseId())
-                ))
+                c.getCourseId(),
+                c.getCourseName(),
+                courseService.countSessionsForCourse(c.getCourseId())
+        ))
                 .toList();
         model.addAttribute("courseTable", courseTable);
 
@@ -188,16 +226,13 @@ public class DashboardWebController {
                 .toList();
         model.addAttribute("courses", courseOptions);
 
-
         Set<Long> teacherCourseIds = courses.stream().map(Course::getCourseId).collect(Collectors.toSet());
         Long selectedCourseId = (courseId != null && teacherCourseIds.contains(courseId))
                 ? courseId
                 : (courses.isEmpty() ? null : courses.get(0).getCourseId());
         model.addAttribute("selectedCourseId", selectedCourseId);
 
-
         List<CourseSession> sessions = (selectedCourseId == null) ? List.of() : sessionService.getSessionsByCourse(selectedCourseId);
-
 
         Set<Long> courseSessionIds = sessions.stream().map(CourseSession::getSessionId).collect(Collectors.toSet());
         Long selectedSessionId = (sessionId != null && courseSessionIds.contains(sessionId))
@@ -205,22 +240,19 @@ public class DashboardWebController {
                 : (sessions.isEmpty() ? null : sessions.get(0).getSessionId());
         model.addAttribute("selectedSessionId", selectedSessionId);
 
-
         List<SessionVM> sessionTable = sessions.stream()
                 .map(s -> new SessionVM(
-                        s.getSessionId(),
-                        s.getSessionDate(),
-                        s.getSessionTime(),
-                        s.getDuration(),
-                        attendanceService.getAttendanceForSession(s.getSessionId()).size()
-                ))
+                s.getSessionId(),
+                s.getSessionDate(),
+                s.getSessionTime(),
+                s.getDuration(),
+                attendanceService.getAttendanceForSession(s.getSessionId()).size()
+        ))
                 .sorted(Comparator.comparing(SessionVM::date).thenComparing(SessionVM::time))
                 .toList();
         model.addAttribute("sessionTable", sessionTable);
 
-
         model.addAttribute("sessionCreateForm", new SessionForm());
-
 
         if (editSessionId != null && courseSessionIds.contains(editSessionId)) {
             CourseSession s = sessions.stream().filter(x -> x.getSessionId().equals(editSessionId)).findFirst().orElse(null);
@@ -233,7 +265,6 @@ public class DashboardWebController {
                 model.addAttribute("sessionEditForm", f);
             }
         }
-
 
         List<AttendanceRow> attendanceRows = List.of();
         if (selectedCourseId != null && selectedSessionId != null) {
@@ -260,12 +291,17 @@ public class DashboardWebController {
         }
         model.addAttribute("attendanceRows", attendanceRows);
 
-
         List<Activity> base = activityService.getActivitiesByTeacher(teacherId);
 
-        if (status != null) base = base.stream().filter(a -> a.getStatus() == status).toList();
-        if (priority != null) base = base.stream().filter(a -> a.getPriority() == priority).toList();
-        if (difficulty != null) base = base.stream().filter(a -> a.getDifficulty() == difficulty).toList();
+        if (status != null) {
+            base = base.stream().filter(a -> a.getStatus() == status).toList();
+        }
+        if (priority != null) {
+            base = base.stream().filter(a -> a.getPriority() == priority).toList();
+        }
+        if (difficulty != null) {
+            base = base.stream().filter(a -> a.getDifficulty() == difficulty).toList();
+        }
 
         if ("deadline".equalsIgnoreCase(sort)) {
             base = base.stream()
@@ -302,13 +338,10 @@ public class DashboardWebController {
 
         model.addAttribute("activities", activityVMs);
 
-
         model.addAttribute("progressLabels", activityVMs.stream().map(ActivityVM::title).toList());
         model.addAttribute("progressValues", activityVMs.stream().map(ActivityVM::progress).toList());
 
-
         model.addAttribute("activityCreateForm", new ActivityCreateDto());
-
 
         if (editActivityId != null) {
             try {
@@ -330,7 +363,6 @@ public class DashboardWebController {
             }
         }
 
-
         model.addAttribute("filterStatus", status);
         model.addAttribute("filterPriority", priority);
         model.addAttribute("filterDifficulty", difficulty);
@@ -339,7 +371,6 @@ public class DashboardWebController {
         addEnums(model);
         return "dashboard";
     }
-
 
     @PostMapping("/sessions/create")
     public String createSessionInline(
@@ -414,16 +445,13 @@ public class DashboardWebController {
             sessionService.deleteSession(sessionId);
             ra.addFlashAttribute("flashOk", "Session deleted.");
         } catch (DataIntegrityViolationException ex) {
-            // your FK constraint error (attendance references session)
             ra.addFlashAttribute("flashError",
-                    "Cannot delete this session because attendance exists for it. " +
-                            "If you want deletion, set DB cascade or delete attendance first.");
+                    "Cannot delete this session because attendance exists for it. ");
         } catch (Exception ex) {
             ra.addFlashAttribute("flashError", "Could not delete session.");
         }
         return redirectDashboard(resolvedUserId, courseId, null, null, null, null, null, null, null);
     }
-
 
     @PostMapping("/attendance/mark")
     public String markAttendance(
@@ -444,7 +472,6 @@ public class DashboardWebController {
         }
         return redirectDashboard(resolvedUserId, courseId, sessionId, null, null, null, null, null, null);
     }
-
 
     @PostMapping("/activities/create")
     public String createActivityInline(
@@ -502,7 +529,6 @@ public class DashboardWebController {
             ra.addFlashAttribute("flashOk", "Activity updated.");
             return redirectDashboard(resolvedUserId, null, null, null, null, null, null, null, null);
         } catch (ResponseStatusException ex) {
-            // IMPORTANT: prevents error screen when status=COMPLETED but progress<100
             ra.addFlashAttribute("flashError", ex.getReason() != null ? ex.getReason() : "Could not update activity.");
             return redirectDashboard(resolvedUserId, null, null, null, null, null, null, activityId, null);
         } catch (Exception ex) {
@@ -522,7 +548,6 @@ public class DashboardWebController {
         }
         return redirectDashboard(resolvedUserId, null, null, null, null, null, null, null, null);
     }
-
 
     @PostMapping("/activities/{activityId}/subtasks")
     public String addSubtask(
