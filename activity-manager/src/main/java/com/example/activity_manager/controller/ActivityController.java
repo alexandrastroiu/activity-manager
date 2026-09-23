@@ -1,40 +1,56 @@
 package com.example.activity_manager.controller;
 
-import com.example.activity_manager.dto.*;
+import java.security.Principal;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.activity_manager.dto.ActivityCreateDto;
+import com.example.activity_manager.dto.ActivityResponseDto;
+import com.example.activity_manager.dto.TeacherDashboardDto;
+import com.example.activity_manager.enums.ActivityStatus;
+import com.example.activity_manager.enums.Difficulty;
+import com.example.activity_manager.enums.Priority;
 import com.example.activity_manager.model.Activity;
 import com.example.activity_manager.model.Teacher;
-import com.example.activity_manager.enums.ActivityStatus;
-import com.example.activity_manager.enums.Priority;
-import com.example.activity_manager.enums.Difficulty;
 import com.example.activity_manager.service.ActivityService;
 import com.example.activity_manager.service.TeacherService;
+import com.example.activity_manager.service.UserService;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/activities")
 public class ActivityController {
+
     private final ActivityService activityService;
     private final TeacherService teacherService;
+    private final UserService userService;
 
-    public ActivityController(ActivityService activityService, TeacherService teacherService) {
+    public ActivityController(ActivityService activityService, TeacherService teacherService, UserService userService) {
         this.activityService = activityService;
         this.teacherService = teacherService;
+        this.userService = userService;
     }
 
     // Create activity
     // POST
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/user/{userId}")
+    @PostMapping
     public ActivityResponseDto createActivity(
-            @PathVariable Long userId,
+            Principal principal,
             @Valid @RequestBody ActivityCreateDto dto
     ) {
-        Teacher teacher = teacherService.getByUserId(userId);
+        Teacher teacher = getCurrentTeacher(principal);
         Activity activity = new Activity();
         activity.setTeacher(teacher);
         activity.setTitle(dto.getTitle());
@@ -53,64 +69,64 @@ public class ActivityController {
 
     // Get activities for a teacher
     // GET
-    @GetMapping("/teacher/{teacherId}")
+    @GetMapping
     public List<ActivityResponseDto> getActivitiesForTeacher(
-            @PathVariable Long teacherId
+            Principal principal
     ) {
-        return activityService.getActivitiesByTeacher(teacherId)
+        return activityService.getActivitiesByTeacher(getCurrentTeacher(principal).getTeacherId())
                 .stream()
                 .map(a -> ActivityResponseDto.from(
-                        a,
-                        activityService.calculateProgress(a.getActivityId())
-                ))
+                a,
+                activityService.calculateProgress(a.getActivityId())
+        ))
                 .toList();
     }
 
     // Get activities by status
     // GET
-    @GetMapping("/teacher/{teacherId}/status/{status}")
+    @GetMapping("/status/{status}")
     public List<ActivityResponseDto> getByStatus(
-            @PathVariable Long teacherId,
+            Principal principal,
             @PathVariable ActivityStatus status
     ) {
-        return activityService.getActivitiesByStatus(teacherId, status)
+        return activityService.getActivitiesByStatus(getCurrentTeacher(principal).getTeacherId(), status)
                 .stream()
                 .map(a -> ActivityResponseDto.from(
-                        a,
-                        activityService.calculateProgress(a.getActivityId())
-                ))
+                a,
+                activityService.calculateProgress(a.getActivityId())
+        ))
                 .toList();
     }
 
     // Get activities by priority
     //GET
-    @GetMapping("/teacher/{teacherId}/priority/{priority}")
+    @GetMapping("/priority/{priority}")
     public List<ActivityResponseDto> getByPriority(
-            @PathVariable Long teacherId,
+            Principal principal,
             @PathVariable Priority priority
     ) {
-        return activityService.getActivitiesByPriority(teacherId, priority)
+        return activityService.getActivitiesByPriority(getCurrentTeacher(principal).getTeacherId(), priority)
                 .stream()
                 .map(a -> ActivityResponseDto.from(
-                        a,
-                        activityService.calculateProgress(a.getActivityId())
-                ))
+                a,
+                activityService.calculateProgress(a.getActivityId())
+        ))
                 .toList();
     }
 
     // Get activities by difficulty
     // GET
-    @GetMapping("/teacher/{teacherId}/difficulty/{difficulty}")
+    @GetMapping("/difficulty/{difficulty}")
     public List<ActivityResponseDto> getByDifficulty(
-            @PathVariable Long teacherId,
+            Principal principal,
             @PathVariable Difficulty difficulty
     ) {
-        return activityService.getActivitiesByDifficulty(teacherId, difficulty)
+        return activityService.getActivitiesByDifficulty(getCurrentTeacher(principal).getTeacherId(), difficulty)
                 .stream()
                 .map(a -> ActivityResponseDto.from(
-                        a,
-                        activityService.calculateProgress(a.getActivityId())
-                ))
+                a,
+                activityService.calculateProgress(a.getActivityId())
+        ))
                 .toList();
     }
 
@@ -124,9 +140,9 @@ public class ActivityController {
 
     // Calculate Progress
     // GET
-    @GetMapping("/teacher/{teacherId}/stats")
-    public TeacherDashboardDto getDashboard(@PathVariable Long teacherId) {
-
+    @GetMapping("/statistics")
+    public TeacherDashboardDto getDashboard(Principal principal) {
+        Long teacherId = getCurrentTeacher(principal).getTeacherId();
         long total = activityService.countTotalActivities(teacherId);
         long completed = activityService.countCompletedActivities(teacherId);
         double avgProgress = activityService.getAverageProgress(teacherId);
@@ -136,13 +152,15 @@ public class ActivityController {
 
     // Sort activities by deadline
     // GET
-    @GetMapping("/teacher/{teacherId}/sorted/deadline")
-    public List<ActivityResponseDto> getSortedByDeadline(@PathVariable Long teacherId) {
+    @GetMapping("/sorted/deadline")
+    public List<ActivityResponseDto> getSortedByDeadline(Principal principal) {
+        Long teacherId = getCurrentTeacher(principal).getTeacherId();
+        
         return activityService.getActivitiesSortedByDeadline(teacherId).stream()
                 .map(a -> ActivityResponseDto.from(
-                        a,
-                        activityService.calculateProgress(a.getActivityId())
-                ))
+                a,
+                activityService.calculateProgress(a.getActivityId())
+        ))
                 .toList();
     }
 
@@ -156,5 +174,11 @@ public class ActivityController {
         Activity updated = activityService.update(activityId, dto);
         int progress = activityService.calculateProgress(updated.getActivityId());
         return ActivityResponseDto.from(updated, progress);
+    }
+
+    // Helper method
+    private Teacher getCurrentTeacher(Principal principal) {
+        Long userId = userService.findByUsername(principal.getName()).getUserId();
+        return teacherService.getByUserId(userId);
     }
 }
